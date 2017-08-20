@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<title>Corrupt.browser</title>
+	<link rel="stylesheet" href="style.css">
+	<style type="text/css">
+		:root #content>#right>.dose>.dosesingle,
+		:root #content>#center>.dose>.dosesingle,
+		:root #header+#content>#left>#rlblock_left {
+			display: none !important;
+		}
+	</style>
+	<style type="text/css">
+		@font-face {
+			font-family: "PjsEmptyFont";
+			src: url('data:application/x-font-ttf;base64,AAEAAAAKAIAAAwAgT1MvMgAAAAAAAAEoAAAAVmNtYXAAAAAAAAABiAAAACxnbHlmAAAAAAAAAbwAAAAkaGVhZAAAAAAAAACsAAAAOGhoZWEAAAAAAAAA5AAAACRobXR4AAAAAAAAAYAAAAAGbG9jYQAAAAAAAAG0AAAABm1heHAAAAAAAAABCAAAACBuYW1lAAAAAAAAAeAAAAAgcG9zdAAAAAAAAAIAAAAAEAABAAAAAQAAAkgTY18PPPUACwAgAAAAALSRooAAAAAAyld0xgAAAAAAAQABAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAEAAAACAAIAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACMAIwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAMAAQAAAAwABAAgAAAABAAEAAEAAABB//8AAABB////wAABAAAAAAAAAAgAEgAAAAEAAAAAAAAAAAAAAAAxAAABAAAAAAABAAEAAQAAMTcBAQAAAAAAAgAeAAMAAQQJAAEAAAAAAAMAAQQJAAIAAgAAAAAAAQAAAAAAAAAAAAAAAAAA') format('truetype');
+		}
+	</style>
+</head>
+
+<body onload="glitch();">
+	<video id="video" autoplay=""></video>
+	<!-- video element to get camera -->
+	<canvas id="getVideo" data-processing-sources="getVideo.pde" tabindex="0" width="600" height="450" style="image-rendering: -webkit-optimize-contrast !important;"></canvas>
+	<!-- pass the video for canvas to dataurl -->
+	<canvas id="out" data-processing-sources="out.pde" tabindex="0" width="640" height="300" style="image-rendering: -webkit-optimize-contrast !important;"></canvas>
+	<!-- smaller canvas for output -->
+	<canvas id="glitch" data-processing-sources="glitch.pde" tabindex="0" width="1920" height="901" style="image-rendering: -webkit-optimize-contrast !important;"></canvas>
+	<!-- main canvas -->
+
+	<script type="text/javascript">
+		var dataUrl = [];
+		var imgs = [];
+		for (var i = 0; i < 10; i++) {
+			imgs[i] = new Image();
+		}
+
+		function generateGif() {
+			var cnvs = document.createElement("canvas");
+			cnvs.setAttribute("width", "306");
+			cnvs.setAttribute("height", "260");
+			cnvs.setAttribute("style", "display:none;");
+			var ctxt = cnvs.getContext('2d');
+
+			var encoder = new GIFEncoder();
+			encoder.setRepeat(0); //0 -> loop forever //1+ -> loop n times then stop
+			encoder.setDelay(160); //go to next frame every n milliseconds
+			encoder.start();
+
+			for (var i = 0; dataUrl[i]; i++) {
+				// console.log(i);
+				ctxt.drawImage(imgs[i], 0, 0, cnvs.width, cnvs.height);
+				encoder.addFrame(ctxt);
+			}
+			encoder.finish();
+
+			var binary_gif = encoder.stream().getData();
+			var data_url = 'data:image/gif;base64,' + encode64(binary_gif);
+			window.open(data_url, '_newtab');
+		}
+	</script>
+
+	<script type="text/javascript" src="processing-1.4.1.min.js"></script>
+	<script type="text/javascript" src="LZWEncoder.js"></script>
+	<script type="text/javascript" src="NeuQuant.js"></script>
+	<script type="text/javascript" src="GIFEncoder.js"></script>
+	<script type="text/javascript" src="b64.js"></script>
+	<script type="text/javascript" src="getUserMedia.js"></script>
+	<script type="text/javascript" src="glitch.js"></script>
+</html>

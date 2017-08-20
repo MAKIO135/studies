@@ -1,0 +1,81 @@
+<!--
+Based on:
+- http://marcgg.com/blog/2016/11/01/javascript-audio/
+- http://alemangui.github.io/blog//2015/12/26/ramp-to-value.html
+- https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>Kick and Snare with Web Audio API</title>
+    </head>
+    <body>
+        <p>Based on:</p>
+        <ul>
+            <li><a href="http://marcgg.com/blog/2016/11/21/chiptune-sequencer-multiplayer/">Building A Multiplayer 8 Bits Sequencer</a></li>
+            <li><a href="https://warm-escarpment-32217.herokuapp.com/">Collaborative 8 Bits Sequencer</a></li>
+        </ul>
+        
+        <p>Click to trigger a snare<br>Press a key to trigger a kick</p>
+
+        <script>
+            const context = new AudioContext();
+
+            const kick = () => {
+                const osc = context.createOscillator();
+                const gain = context.createGain();
+                osc.connect( gain );
+                gain.connect( context.destination );
+                osc.frequency.setValueAtTime( 120,context.currentTime );
+                gain.gain.setValueAtTime( 2, context.currentTime );
+                osc.frequency.exponentialRampToValueAtTime( .01, context.currentTime + .5 );
+                gain.gain.exponentialRampToValueAtTime( .01, context.currentTime + .5 );
+                osc.start( context.currentTime );
+                osc.stop( context.currentTime + .5 );
+            };
+
+            const snare = () => {
+                const noise = context.createBufferSource();
+                noise.buffer = ( () => {
+                    const e = context.sampleRate;
+                    const t = context.createBuffer( 1, e, context.sampleRate );
+                    const n = t.getChannelData( 0 );
+                    for( let i = 0; i < e; i ++ ) n[ i ] = 2 * Math.random() - 1;
+                    return t;
+                } )();
+
+                const filter = context.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.value = 1e3;
+                noise.connect( filter );
+
+                const noiseEnvelope = context.createGain();
+                filter.connect( noiseEnvelope );
+                noiseEnvelope.connect( context.destination );
+
+                const osc = context.createOscillator();
+                osc.type = 'triangle';
+                const oscEnvelope = context.createGain();
+                osc.connect( oscEnvelope );
+                oscEnvelope.connect( context.destination );
+
+                noiseEnvelope.gain.setValueAtTime( 1, context.currentTime );
+                noiseEnvelope.gain.exponentialRampToValueAtTime( .01, context.currentTime + .2 );
+                noise.start( context.currentTime );
+
+                osc.frequency.setValueAtTime( 100, context.currentTime );
+                oscEnvelope.gain.setValueAtTime( .7, context.currentTime );
+                oscEnvelope.gain.exponentialRampToValueAtTime( .01, context.currentTime + .1 );
+                osc.start( context.currentTime );
+
+                osc.stop( context.currentTime + .2 );
+                noise.stop( context.currentTime + .2 );
+            };
+
+            document.body.addEventListener( 'keypress', kick );
+            document.body.addEventListener( 'click', snare  );
+        </script>
+    </body>
+</html>

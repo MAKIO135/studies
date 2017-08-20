@@ -1,0 +1,106 @@
+
+<!-- saved from http://www.mazbox.com/synths/dubstep/ -->
+<html>
+<head>
+	<title>Javascript Dubstep Generator</title>
+
+	<script src="audiolib.min.js"></script>
+	<script src="oo.js"></script>
+	<script src="graphics.js"></script>
+	<script src="dsp.js"></script>
+
+	<style type="text/css">
+		body {
+			text-align:center;
+			background-color:black;
+			color:white;
+			font-family:Helvetica, Arial, Sans-serif;
+		}
+		#info {
+			margin:1em auto;
+			width:500px;
+			text-align:left;
+			padding:2px 1em 1em 1em;
+			background-color:black;
+		}
+		h1, h2 {
+			font-weight:normal;
+			text-transform:uppercase;
+		}
+		p, li {
+			font-size:12px;
+		}
+		a {
+			color:#FF9999;
+		}
+		#text {
+			background-color:black;
+			padding:1em;
+			width:600px;
+			text-align:left;
+			margin: 1em auto;
+		}
+	</style>
+
+	<script src="dubstep.js"></script>
+
+	<script type="text/javascript">
+		window.addEventListener( 'load', e => {
+			graphics.init("#holder", draw, window.innerWidth-10, 240);
+			background(0,0,0);
+		} );
+
+		function draw() {
+			background(0,0,0, 0.4);
+			setColor(100,100,100, 0.7);
+			rect(100,100,100, ((bassWobble+1)*0.5)*100);
+			rect(200, 100, 100*snareEnvelope, 100);
+			rect(100, 100, -100*kickEnvelope, 100);
+			graphics.context.globalAlpha = 1.0;
+			snareEnvelope = Math.pow(snareEnvelope, 0.5);
+			var g = Math.round(snareEnvelope*255);
+			var b = Math.max(g, Math.round(kickEnvelope*255));
+
+			pushMatrix();
+			translate(graphics.width/2, graphics.height/2);
+
+			for(i = 5; i < oscilloscope.length; i += 5) {
+				var alph = 1.0 - i/oscilloscope.length;
+				alph = Math.pow(alph, 0.7);
+				setColor(255,g, b, alph);
+				rect(i/5-5, 100*(oscilloscope[i]*0.5)+0.5, 1 + 50 * kickEnvelope, 2 + 50 * snareEnvelope);
+				rect(-i/5+5, 100*(oscilloscope[i]*0.5)+0.5, 1 + 50 * kickEnvelope, 2 + 50 * snareEnvelope);
+			}
+
+			popMatrix();
+		}
+	</script>
+</head>
+
+<body style="background-color:#000000">
+	<h1>Javascript Dubstep Generator</h1>
+
+	<div id="holder">
+		<canvas id="mygraphicscanvas"></canvas>
+	</div>
+
+	<div id="info">
+		<h2>Info</h2>
+		<p>
+			Algorithmic dubstep generator ported from <a href="http://www.mcld.co.uk/">Dan Stowell's</a> amazing supercollider patch. All DSP is done in Javascript - no samples. I had to port <a href="http://freeverb3.sourceforge.net/">Freeverb</a> to javascript to get it working. It's not a perfect replica, but it's pretty close.
+			See here for the source: <a href="dubstep.js">dubstep.js</a> and here for the super simple dsp library it's running off: <a href="dsp.js">dsp.js</a>.
+		</p>
+		<p>
+			Made using
+		</p>
+		<ul>
+			<li><a href="https://github.com/jussi-kalliokoski/audiolib.js/">audiolib.js</a></li>
+			<li><a href="http://freeverb3.sourceforge.net/">Freeverb</a> (ported to javascript here: <a href="freeverb.js">freeverb.js</a>)</li>
+			<li><a href="http://ejohn.org/blog/simple-javascript-inheritance/">Simple Javascript Inheritance</a> (by John Resig)</li>
+			<li>DSP algorithms mostly taken from <a href="http://www.musicdsp.org/">musicdsp.org</a></li>
+			<li>Filter taken from <a href="http://maximilian.strangeloop.co.uk/">Maximillian</a></li>
+		</ul>
+
+	</div>
+</body>
+</html>

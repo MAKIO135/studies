@@ -1,0 +1,9 @@
+d1 $ jux (# accelerate "-0.1") $ s "supermandolin*8" # midinote "[80!6 78]/8"
+  # sustain "1 0.25 2 1 .2 2 .2 2 .2 1 .5"
+
+d1 silence
+
+d2 $ every 12 (echo (negate 3/32)) $ n "c5*2" # s "supernoise"
+  # accelerate "-1" # speed "2" # sustain "0.1 ! ! 1" # voice "0.0"
+
+d2 silence

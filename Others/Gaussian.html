@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.4/p5.js" charset="utf-8"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.4/addons/p5.dom.js" charset="utf-8"></script>
+        <style>
+            hr{
+                margin: 1px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <script>
+            var mean, meanSlider, meanP,
+                sd, sdSlider, sdP;
+
+            function setup(){
+                createCanvas( 300, 150 );
+
+                meanSlider = createSlider( 0, 99, 20, 1 );
+                meanSlider.position( 10, 160 );
+                meanP = createP( 'mean : 20' );
+                meanP.position( 10, 170 );
+
+                sdSlider = createSlider( 1, 25, 7, 1 );
+                sdSlider.position( 150, 160 );
+                sdP = createP( 'sd : 7' );
+                sdP.position( 150, 170 );
+            }
+
+            function draw(){
+                background( 'lightgrey' );
+
+                mean = meanSlider.value();
+                meanP.elt.innerText =  'mean : ' + mean;
+
+                sd = sdSlider.value();
+                sdP.elt.innerText = 'standard deviation : ' + sd ;
+
+                stroke( 'black' );
+                for( var x = 0; x < width; x += 1 ){
+                     var y = 1.0 / ( sd * sqrt( TWO_PI ) )
+                         * exp(
+                               - ( 1.0 / 2.0 ) * sq( ( x / ( width / 100 ) - mean ) / sd )
+                         ) * height * 10;
+
+                     line( x, height, x, height - y );
+                }
+
+                stroke( 'red' );
+                line( mean * ( width / 100 ), 0, mean * ( width / 100 ), height );
+            }
+        </script>
+    </body>
+</html>
