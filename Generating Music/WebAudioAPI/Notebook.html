@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Web Audio API Notebook</title>
+
+    <link rel="stylesheet" href="https://cdn.rawgit.com/oltmannsdaniel/skeleton-plus/master/css/skeleton-plus.min.css" type="text/css" />
+    <link rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Raleway');
+        h1, div, p{
+            font-family: Raleway, sans-serif;
+        }
+        body{
+            padding: 20px;
+            background-color: #ddd;
+        }
+        P{
+            font-size: 16px;
+        }
+        pre{
+            border-radius: 2px;
+            box-shadow: 3px 3px 8px #888;
+        }
+        code{
+            font-size: 16px;
+            padding: 0;
+            border: 0;
+        }
+        div{
+            border-radius: 2px;
+            padding: 20px;
+            background: #456;
+            box-shadow: 6px 6px 8px #888;
+            color: #fff;
+        }
+    </style>
+
+    <script>
+        window.addEventListener( 'load', e => {
+            document.querySelectorAll( 'body>script' ).forEach( s => {
+                let pre = document.createElement( 'pre' );
+                let code = document.createElement( 'code' );
+                code.innerHTML = s.innerHTML;
+                pre.appendChild( code );
+                document.body.insertBefore( pre, s );
+                hljs.highlightBlock( pre );
+            } );
+        } );
+    </script>
+</head>
+<body>
+    <h1>Web Audio API Notebook</h1>
+
+    <p>First, to use the Web Audio API, we need an AudioContext:</p>
+    <script>
+        const context = new AudioContext();
+    </script>
+    <p>Then we can create audio sources like an Oscillator node, and connect it to the AudioContext destination:</p>
+    <script>
+        const osc = context.createOscillator();
+        osc.connect( context.destination );
+    </script>
+    <p>We can finally start and stop this source:</p>
+    <div id="div1">
+        <h4>#div1</h4>
+        <p>Click #div1 to start/stop the oscillator node.</p>
+    </div>
+    <script>
+        ( () => {
+            let play = false;
+            document.querySelector('#div1').addEventListener( 'click', e => {
+                play = !play;
+                if( play ) osc.start();
+                else osc.stop();
+            } );
+        } )();
+    </script>
+    <p>
+        An Oscillator node, can not be started more than once. Thus, once stopped, we can't trigger it anymore, yet we can recreate a new oscillator node;
+    </p>
+    <div id="div2">
+        <h4>#div2</h4>
+        <p>Click #div2 to trigger an oscillator node.</p>
+    </div>
+    <script>
+        ( () => {
+            let osc;
+            let play = false;
+            document.querySelector('#div2').addEventListener( 'click', e => {
+                play = !play;
+                if( play ){
+                    osc = context.createOscillator();
+                    osc.connect( context.destination );
+                    osc.start();
+                }
+                else osc.stop();
+            } );
+        } )();
+    </script>
+</body>
+</html>
