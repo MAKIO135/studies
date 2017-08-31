@@ -4,31 +4,50 @@
     <meta charset="utf-8">
     <title>Web Audio API Notebook</title>
 
-    <link rel="stylesheet" href="https://cdn.rawgit.com/oltmannsdaniel/skeleton-plus/master/css/skeleton-plus.min.css" type="text/css" />
     <link rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css?family=Raleway');
+
         h1, div, p{
             font-family: Raleway, sans-serif;
         }
+
+        h1,h2{
+            padding: 0.25rem;
+            font-weight: 300;
+        }
+
+        h1{
+            font-size: 3.8rem;
+        }
+
+        h2{
+            font-size: 3.4rem;
+            margin: 0;
+        }
+
         body{
             padding: 20px;
             background-color: #ddd;
         }
+
         P{
             font-size: 16px;
         }
+
         pre{
             border-radius: 2px;
             box-shadow: 3px 3px 8px #888;
         }
+
         code{
             font-size: 16px;
             padding: 0;
             border: 0;
         }
+
         div{
             border-radius: 2px;
             padding: 20px;
@@ -49,6 +68,15 @@
                 hljs.highlightBlock( pre );
             } );
         } );
+
+        // for atom preview HTML
+        window.addEventListener( 'scroll', e => {
+            localStorage.setItem( 'scrollPosition', window.scrollY );
+        } );
+        window.addEventListener( 'load', e => {
+            //scroll to previous position if defined
+            window.scroll( 0, localStorage.getItem( 'scrollPosition' ) || window.innerHeight );
+        } );
     </script>
 </head>
 <body>
@@ -65,31 +93,32 @@
     </script>
     <p>We can finally start and stop this source:</p>
     <div id="div1">
-        <h4>#div1</h4>
+        <h2>#div1</h2>
         <p>Click #div1 to start/stop the oscillator node.</p>
     </div>
     <script>
-        ( () => {
+        {
             let play = false;
             document.querySelector('#div1').addEventListener( 'click', e => {
                 play = !play;
                 if( play ) osc.start();
                 else osc.stop();
             } );
-        } )();
+        }
     </script>
+
     <p>
-        An Oscillator node, can not be started more than once. Thus, once stopped, we can't trigger it anymore, yet we can recreate a new oscillator node;
+        An Oscillator node, can not be started more than once. Thus, once stopped, we can't trigger it anymore, yet we can recreate a new oscillator node:
     </p>
     <div id="div2">
-        <h4>#div2</h4>
+        <h2>#div2</h2>
         <p>Click #div2 to trigger an oscillator node.</p>
     </div>
     <script>
-        ( () => {
+        {
             let osc;
             let play = false;
-            document.querySelector('#div2').addEventListener( 'click', e => {
+            document.querySelector( '#div2' ).addEventListener( 'click', e => {
                 play = !play;
                 if( play ){
                     osc = context.createOscillator();
@@ -98,7 +127,40 @@
                 }
                 else osc.stop();
             } );
-        } )();
+        }
+    </script>
+
+    <p>Regarding Oscillator node, we can change their frequency, as well as their type:</p>
+    <div id="div3">
+        <h2>#div3</h2>
+        <input type="range" min="50" max="1600" value="440" name="frequency">
+        <select>
+            <option value="sine">sine</option>
+            <option value="triangle">triangle</option>
+            <option value="square">square</option>
+            <option value="sawtooth">sawtooth</option>
+        </select>
+        <button>Play/Stop</button>
+    </div>
+    <script>
+        {
+            let osc;
+            let play = false;
+            const slider = document.querySelector( '#div3>input' );
+            const select = document.querySelector( '#div3>select' );
+            document.querySelector( '#div3>button' )
+                .addEventListener( 'click', e => {
+                play = !play;
+                if( play ){
+                    osc = context.createOscillator();
+                    osc.type = select.value;
+                    osc.frequency.value = slider.value;
+                    osc.connect( context.destination );
+                    osc.start();
+                }
+                else osc.stop();
+            } );
+        }
     </script>
 </body>
 </html>
