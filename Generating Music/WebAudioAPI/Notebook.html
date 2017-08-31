@@ -239,6 +239,7 @@ document.querySelector( '#div5' ).addEventListener( 'click', e => {
     We can now use musical notation based on the following data:
 </p>
 <script>
+const types = [ 'sine', 'square', 'triangle', 'sawtooth' ];
 const notes = [ 'C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B' ];
 const frequencies = {};
 frequencies[ 'C' ] = [ 16.35, 32.70, 65.41, 130.8, 261.6, 523.3, 1047, 2093, 4186 ];
@@ -271,7 +272,7 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
         if( Math.random() < 0.07 ){
             let note = notes[ Math.floor( Math.random() * notes.length ) ],
                 octave = Math.floor( Math.random() * 9 ),
-                noteDuration = .3 + Math.random() * 5;
+                noteDuration = .5 + Math.random() * 5;
 
             let osc = context.createOscillator();
             let gain = context.createGain();
@@ -279,7 +280,7 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
             osc.connect( gain );
 
             osc.frequency.value = frequencies[ note ][ octave ];
-            osc.type = [ 'sine', 'square', 'triangle', 'sawtooth' ][ Math.floor( Math.random( 4 ) ) ];
+            osc.type = types[ Math.floor( Math.random() * types.length ) ];
             osc.start();
             gain.gain.exponentialRampToValueAtTime( 1e-5, context.currentTime + noteDuration );
         }
@@ -291,5 +292,43 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
     } );
 }
 </script>
+
+<p>
+    Let's do a siren by connecting a first <span>Oscillator</span> node to a <span>Gain</span> node itself connected to a second <span>Oscillator</span> node <span>frequency</span>, itself connected to the <span>AudioContext</span> <span>destination</span>:
+</p>
+<div id="div7">
+    <h2>#div7</h2>
+    <p>Click #div7 to start/stop siren.</p>
+</div>
+<script>
+{
+    let play = false;
+    let osc, gain, osc2;
+    document.querySelector( '#div7' ).addEventListener( 'click', e => {
+        play = ! play;
+        if( play ){
+            osc = context.createOscillator();
+            osc.frequency.value = 400; // original frequency around which the siren will vary
+            osc2 = context.createOscillator();
+            osc2.frequency.value = 0.5; // speed of variation
+            // osc2.type = 'square';
+            gain = context.createGain();
+            gain.gain.value = 200; // amount of variation
+
+            osc2.connect( gain );
+            gain.connect( osc.frequency );
+            osc.connect( context.destination );
+            osc2.start();
+            osc.start();
+        }
+        else{
+            osc.disconnect();
+            osc2.disconnect();
+            gain.disconnect();
+        }
+    } );
+}
+</script>
+
 </body>
 </html>
