@@ -17,6 +17,7 @@ ___
 - https://tonejs.github.io//playlist?list=PLRqwX-V7Uu6aFcVjlDAkkGIixw70s7jpW
 
 ### MIDI
+- [Scribbletune, Create music with JavaScript & Node.js!](http://scribbletune.com/)
 - http://vormplus.be/blog/article/converting-midi-to-json
 
 ### ByteBeat
@@ -47,23 +48,33 @@ ___
 - https://google.github.io/songbird/
 - http://marcgg.com/blog/2016/11/21/chiptune-sequencer-multiplayer/
 ___
+## GPU
 
-## GLSL
+### GLSL
 
-### Ressources
+#### Ressources
 - [Graphics in plain Language](https://renderdoc.org/blog/Graphics-in-Plain-Language/)
 - http://thebookofshaders.com/
 - https://github.com/patriciogonzalezvivo/thebookofshaders/tree/master/appendix/04
 
-### Signed Distance Function
+#### Signed Distance Function
 - http://pixelspiritdeck.com/
 - Challenge: Recreate some designs from http://www.dailyminimal.com/
 
-### Tools:
+#### Tools:
 - https://github.com/fordhurley/atom-glsl-preview
+- [glsl-livecoder for Atom](https://atom.io/packages/glsl-livecoder/)
+- [VJ / Live Coding on Atom — glsl-livecoder](https://medium.com/@amagitakayosi/vj-live-coding-on-atom-glsl-livecoder-329eec5462df)
 - [stackgl/glslify](https://github.com/stackgl/glslify)
 ___
 ## Motion / Physics
 - [GSAP](https://greensock.com/docs)
 - [matter.js](http://brm.io/matter-js/)
 - [The Coding Train - Physics Libraries Playlist](https://www.youtube.com/playlist?list=PLRqwX-V7Uu6akvoNKE4GAxf6ZeBYoJ4uh)
+- [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
+
+___
+## Dataviz
+
+___
+## Algorithms
