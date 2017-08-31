@@ -17,6 +17,7 @@ ___
 - https://tonejs.github.io//playlist?list=PLRqwX-V7Uu6aFcVjlDAkkGIixw70s7jpW
 
 ### MIDI
+- [Scribbletune, Create music with JavaScript & Node.js!](http://scribbletune.com/)
 - http://vormplus.be/blog/article/converting-midi-to-json
 
 ### ByteBeat
@@ -70,6 +71,7 @@ ___
 - [GSAP](https://greensock.com/docs)
 - [matter.js](http://brm.io/matter-js/)
 - [The Coding Train - Physics Libraries Playlist](https://www.youtube.com/playlist?list=PLRqwX-V7Uu6akvoNKE4GAxf6ZeBYoJ4uh)
+- [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API)
 
 ___
 ## Dataviz
