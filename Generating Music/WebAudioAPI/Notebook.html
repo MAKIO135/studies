@@ -10,7 +10,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.
 <style>
     @import url('https://fonts.googleapis.com/css?family=Raleway');
 
-    h1, div, p{
+    h1, div, p, li{
         font-family: Raleway, sans-serif;
     }
 
@@ -39,8 +39,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.
 
     p>span{
         padding: 0px 4px;
-        border-radius: 2px;
-        background: #ccc;
+        /*border-radius: 2px;*/
+        /*background: #d3d3d3;*/
         color: #333;
         font-family: monospace;
         font-weight: bold;
@@ -257,7 +257,7 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
 </script>
 
 <p>
-    And play randomly:
+    Time for some stochastic music:
 </p>
 <div id="div6">
     <h2>#div6</h2>
@@ -299,6 +299,10 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
 <div id="div7">
     <h2>#div7</h2>
     <p>Click #div7 to start/stop siren.</p>
+    <input id="soundFreq" type="range" min="100" max="1000" value="400">
+    <input id="speedFreq" type="range" min="1" max="30" value="5">
+    <input id="amp" type="range" min="100" max="1000" value="400">
+    <button>Play/Stop</button>
 </div>
 <script>
 {
@@ -308,7 +312,7 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
         play = ! play;
         if( play ){
             osc = context.createOscillator();
-            osc.frequency.value = 400; // original frequency around which the siren will vary
+            osc.frequency.value = 400; // frequency around which the siren will vary
             osc2 = context.createOscillator();
             osc2.frequency.value = 0.5; // speed of variation
             // osc2.type = 'square';
@@ -329,6 +333,17 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
     } );
 }
 </script>
+
+
+<hr>
+<p>Ressources:</p>
+<ul>
+    <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API">Web Audio API on MDN</a></li>
+    <li><a href="http://marcgg.com/blog/2016/11/01/javascript-audio/">Generate Sounds Programmatically With Javascript</a></li>
+    <li><a href="http://alemangui.github.io/blog//2015/12/26/ramp-to-value.html">Web Audio, the ugly click and the human ear</a></li>
+    <li><a href="http://marcgg.com/blog/2016/11/21/chiptune-sequencer-multiplayer/">Building A Multiplayer 8 Bits Sequencer</a></li>
+    <li><a href="https://warm-escarpment-32217.herokuapp.com/">Collaborative 8 Bits Sequencer</a></li>
+</ul>
 
 </body>
 </html>
