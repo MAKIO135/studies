@@ -1,107 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>Web Audio API Notebook</title>
+    <meta charset="utf-8">
+    <title>Web Audio API Notebook</title>
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-<style>
-    @import url('https://fonts.googleapis.com/css?family=Raleway');
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Raleway');
 
-    h1, div, p, li{
-        font-family: Raleway, sans-serif;
-    }
+        h1, div, p, li{
+            font-family: Raleway, sans-serif;
+        }
 
-    h1,h2{
-        padding: 0.25rem;
-        font-weight: 300;
-    }
+        h1,h2{
+            padding: 0.25rem;
+            font-weight: 300;
+        }
 
-    h1{
-        font-size: 3.8rem;
-    }
+        h1{
+            font-size: 3.8rem;
+        }
 
-    h2{
-        font-size: 3.4rem;
-        margin: 0;
-    }
+        h2{
+            font-size: 3.4rem;
+            margin: 0;
+        }
 
-    body{
-        padding: 20px;
-        background-color: #ddd;
-    }
+        body{
+            padding: 20px;
+            background-color: #ddd;
+        }
 
-    P{
-        font-size: 16px;
-    }
+        P{
+            font-size: 16px;
+        }
 
-    p>span{
-        padding: 0px 4px;
-        /*border-radius: 2px;*/
-        /*background: #d3d3d3;*/
-        color: #333;
-        font-family: monospace;
-        font-weight: bold;
-    }
+        .code{
+            padding: 0px 4px;
+            /*border-radius: 2px;*/
+            /*background: #d3d3d3;*/
+            color: #333;
+            font-family: monospace;
+            font-weight: bold;
+        }
 
-    pre{
-        border-radius: 2px;
-        box-shadow: 3px 3px 8px #888;
-        padding-bottom: 22px !important;
-    }
+        pre{
+            border-radius: 2px;
+            box-shadow: 3px 3px 8px #888;
+            padding-bottom: 22px !important;
+        }
 
-    code{
-        font-size: 16px;
-        padding: 0;
-        border: 0;
-    }
+        code{
+            font-size: 16px;
+            padding: 0;
+            border: 0;
+        }
 
-    div{
-        border-radius: 2px;
-        padding: 20px;
-        background: #456;
-        box-shadow: 6px 6px 8px #888;
-        color: #fff;
-    }
-</style>
+        div{
+            border-radius: 2px;
+            padding: 20px;
+            background: #456;
+            box-shadow: 6px 6px 8px #888;
+            color: #fff;
+        }
+    </style>
 
-<script>
-    window.addEventListener( 'load', e => {
-        document.querySelectorAll( 'body>script' ).forEach( s => {
-            let pre = document.createElement( 'pre' );
-            let code = document.createElement( 'code' );
-            code.innerHTML = s.innerHTML;
-            pre.appendChild( code );
-            document.body.insertBefore( pre, s );
-            hljs.highlightBlock( pre );
+    <script>
+        window.addEventListener( 'load', e => {
+            document.querySelectorAll( 'body>script' ).forEach( s => {
+                let pre = document.createElement( 'pre' );
+                let code = document.createElement( 'code' );
+                code.innerHTML = s.innerHTML;
+                pre.appendChild( code );
+                document.body.insertBefore( pre, s );
+                hljs.highlightBlock( pre );
+            } );
         } );
-    } );
 
-    // for atom preview HTML
-    window.addEventListener( 'scroll', e => {
-        localStorage.setItem( 'scrollPosition', window.scrollY );
-    } );
-    window.addEventListener( 'load', e => {
-        //scroll to previous position if defined
-        window.scroll( 0, localStorage.getItem( 'scrollPosition' ) || window.innerHeight );
-    } );
-</script>
+        // for atom preview HTML
+        window.addEventListener( 'scroll', e => {
+            localStorage.setItem( 'scrollPosition', window.scrollY );
+        } );
+        window.addEventListener( 'load', e => {
+            //scroll to previous position if defined
+            window.scroll( 0, localStorage.getItem( 'scrollPosition' ) || window.innerHeight );
+        } );
+    </script>
 </head>
 
 <body>
 <h1>Web Audio API Notebook</h1>
 
 <p>
-    First, to use the Web Audio API, we need an <span>AudioContext</span>:
+    First, to use the Web Audio API, we need an <span class="code">AudioContext</span>:
 </p>
 <script>
 const context = new AudioContext();
 </script>
 
 <p>
-    Then we can create audio sources like an <span>Oscillator</span> node, and connect it to the <span>AudioContext</span> <span>destination</span>:
+    Then we can create audio sources like an <span class="code">Oscillator</span> node, and connect it to the <span class="code">AudioContext</span> <span class="code">destination</span>:
 </p>
 <script>
 const osc = context.createOscillator();
@@ -127,7 +127,7 @@ osc.connect( context.destination );
 </script>
 
 <p>
-    An <span>Oscillator</span> node, can not be started more than once. Thus, once stopped, we can't trigger it anymore, yet we can recreate a new <span>Oscillator</span> node:
+    An <span class="code">Oscillator</span> node, can not be started more than once. Thus, once stopped, we can't trigger it anymore, yet we can recreate a new <span class="code">Oscillator</span> node:
 </p>
 <div id="div2">
     <h2>#div2</h2>
@@ -150,7 +150,7 @@ osc.connect( context.destination );
 </script>
 
 <p>
-    Regarding <span>Oscillator</span> node, we can change their <span>frequency</span>, as well as their <span>type</span>:
+    Regarding <span class="code">Oscillator</span> node, we can change their <span class="code">frequency</span>, as well as their <span class="code">type</span>:
 </p>
 <div id="div3">
     <h2>#div3</h2>
@@ -184,7 +184,7 @@ osc.connect( context.destination );
 </script>
 
 <p>
-    Instead of connecting our <span>Oscillator</span> node to the <span>AudioContext</span> <span>destination</span>, we can use a <span>Gain</span> node to control the volume, by connecting the <span>Oscillator</span> node to the <span>Gain</span> node, which is connected to the <span>AudioContext</span> <span>destination:</span>
+    Instead of connecting our <span class="code">Oscillator</span> node to the <span class="code">AudioContext</span> <span class="code">destination</span>, we can use a <span class="code">Gain</span> node to control the volume, by connecting the <span class="code">Oscillator</span> node to the <span class="code">Gain</span> node, which is connected to the <span class="code">AudioContext</span> <span class="code">destination:</span>
 </p>
 <div id="div4">
     <h2>#div4</h2>
@@ -216,14 +216,115 @@ osc.connect( context.destination );
 </script>
 
 <p>
-    Finally, we can use the <span>Gain.gain.exponentialRampToValueAtTime( value, time )</span> method to play some nice notes:
+    Let's create sirens by connecting a first <span class="code">Oscillator</span> node to a <span class="code">Gain</span> node itself connected to a second <span class="code">Oscillator</span> node <span class="code">frequency</span>, itself connected to the <span class="code">AudioContext</span> <span class="code">destination</span>:
 </p>
 <div id="div5">
     <h2>#div5</h2>
-    <p>Click to play a note</p>
+    <input id="baseFreqSlider" type="range" min="100" max="1000" value="400">
+    <p style="display:inline;">Base Frequency: <span id="baseFreqSpan"></span></p><br>
+    <input id="sirenFreqSlider" type="range" min="1" max="60" value="10">
+    <p style="display:inline;">siren Frequency: <span id="sirenFreqSpan"></span></p><br>
+    <input id="sirenAmpSlider" type="range" min="100" max="500" value="200">
+    <p style="display:inline;">siren Amplitude: <span id="sirenAmpSpan"></span></p><br>
+
+    <select>
+        <option value="sine">sine</option>
+        <option value="triangle">triangle</option>
+        <option value="square">square</option>
+        <option value="sawtooth">sawtooth</option>
+    </select><br><br>
+
+    <button>Play/Stop</button>
 </div>
 <script>
-document.querySelector( '#div5' ).addEventListener( 'click', e => {
+{
+    let play = false;
+    let osc, gain, osc2;
+
+    let baseFreqSlider = document.querySelector( '#div5>#baseFreqSlider' ),
+        baseFreqSpan = document.querySelector( '#div5 #baseFreqSpan' ),
+        baseFreq = baseFreqSlider.value;
+    baseFreqSpan.innerText = baseFreq;
+    baseFreqSlider.addEventListener( 'mousemove', e => {
+        baseFreq = baseFreqSlider.value;
+        baseFreqSpan.innerText = baseFreq;
+        try{
+            osc.frequency.value = baseFreq;
+        }
+        catch( e ){}
+    } );
+
+    let sirenFreqSlider = document.querySelector( '#div5>#sirenFreqSlider' ),
+        sirenFreqSpan = document.querySelector( '#div5 #sirenFreqSpan' ),
+        sirenFreq = sirenFreqSlider.value / 10;
+    sirenFreqSpan.innerText = sirenFreq;
+    sirenFreqSlider.addEventListener( 'mousemove', e => {
+        sirenFreq = sirenFreqSlider.value / 10;
+        sirenFreqSpan.innerText = sirenFreq;
+        try{
+            osc2.frequency.value = sirenFreq;
+        }
+        catch( e ){}
+    } );
+
+    let sirenAmpSlider = document.querySelector( '#div5>#sirenAmpSlider' ),
+        sirenAmpSpan = document.querySelector( '#div5 #sirenAmpSpan' ),
+        sirenAmp = sirenAmpSlider.value;
+    sirenAmpSpan.innerText = sirenAmp;
+    sirenAmpSlider.addEventListener( 'mousemove', e => {
+        sirenAmp = sirenAmpSlider.value;
+        sirenAmpSpan.innerText = sirenAmp;
+        try{
+            gain.gain.value = sirenAmp;
+        }
+        catch( e ){}
+    } );
+
+    let sirenTypeSelect = document.querySelector( '#div5>select' ),
+        sirentType = sirenTypeSelect.value;
+    sirenTypeSelect.addEventListener( 'click', e => {
+        sirentType = sirenTypeSelect.value;
+        try{
+            osc2.type = sirentType;
+        }
+        catch( e ){}
+    } );
+
+    document.querySelector( '#div5>button' ).addEventListener( 'click', e => {
+        play = ! play;
+        if( play ){
+            osc = context.createOscillator();
+            osc.frequency.value = baseFreq;
+            osc2 = context.createOscillator();
+            osc2.frequency.value = sirenFreq;
+            osc2.type = sirentType;
+            gain = context.createGain();
+            gain.gain.value = sirenAmp;
+
+            osc2.connect( gain );
+            gain.connect( osc.frequency );
+            osc.connect( context.destination );
+            osc2.start();
+            osc.start();
+        }
+        else{
+            osc.disconnect();
+            osc2.disconnect();
+            gain.disconnect();
+        }
+    } );
+}
+</script>
+
+<p>
+    Finally, we can use the <span class="code">Gain.gain.exponentialRampToValueAtTime( value, time )</span> method to play some nice notes:
+</p>
+<div id="div6">
+    <h2>#div6</h2>
+    <p>Click #div6 to play a note</p>
+</div>
+<script>
+document.querySelector( '#div6' ).addEventListener( 'click', e => {
     let gain = context.createGain(),
         osc = context.createOscillator(),
         noteDuration = 1.5; // in seconds
@@ -232,6 +333,12 @@ document.querySelector( '#div5' ).addEventListener( 'click', e => {
     gain.connect( context.destination );
     osc.start();
     gain.gain.exponentialRampToValueAtTime( 1e-5, context.currentTime + noteDuration );
+
+    setTimeout( () => {
+        osc.stop();
+        osc.disconnect();
+        gain.disconnect();
+    }, 1000 * noteDuration );
 } );
 </script>
 
@@ -259,9 +366,9 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
 <p>
     Time for some stochastic music:
 </p>
-<div id="div6">
-    <h2>#div6</h2>
-    <p>Click #div6 to start/stop random noisy music.</p>
+<div id="div7">
+    <h2>#div7</h2>
+    <p>Click #div7 to start/stop random noisy music.</p>
 </div>
 <script>
 {
@@ -283,10 +390,16 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
             osc.type = types[ Math.floor( Math.random() * types.length ) ];
             osc.start();
             gain.gain.exponentialRampToValueAtTime( 1e-5, context.currentTime + noteDuration );
+
+            setTimeout( () => {
+                osc.stop();
+                osc.disconnect();
+                gain.disconnect();
+            }, 100 * noteDuration );
         }
     }
 
-    document.querySelector( '#div6' ).addEventListener( 'click', e => {
+    document.querySelector( '#div7' ).addEventListener( 'click', e => {
         play = ! play;
         if( play ) music();
     } );
@@ -294,46 +407,254 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
 </script>
 
 <p>
-    Let's do a siren by connecting a first <span>Oscillator</span> node to a <span>Gain</span> node itself connected to a second <span>Oscillator</span> node <span>frequency</span>, itself connected to the <span>AudioContext</span> <span>destination</span>:
+    We can use different scales to play consonant notes:
 </p>
-<div id="div7">
-    <h2>#div7</h2>
-    <p>Click #div7 to start/stop siren.</p>
-    <input id="soundFreq" type="range" min="100" max="1000" value="400">
-    <input id="speedFreq" type="range" min="1" max="30" value="5">
-    <input id="amp" type="range" min="100" max="1000" value="400">
-    <button>Play/Stop</button>
+<div id="div8">
+    <h2>#div8</h2>
+    <p>Click #div8 to start/stop random consonant music.</p>
 </div>
 <script>
 {
-    let play = false;
-    let osc, gain, osc2;
-    document.querySelector( '#div7' ).addEventListener( 'click', e => {
-        play = ! play;
-        if( play ){
-            osc = context.createOscillator();
-            osc.frequency.value = 400; // frequency around which the siren will vary
-            osc2 = context.createOscillator();
-            osc2.frequency.value = 0.5; // speed of variation
-            // osc2.type = 'square';
-            gain = context.createGain();
-            gain.gain.value = 200; // amount of variation
+    const highScale = [ frequencies[ 'D' ][ 6 ], frequencies[ 'C' ][ 6 ], frequencies[ 'B' ][ 5 ], frequencies[ 'A' ][ 5 ], frequencies[ 'G' ][ 5 ], frequencies[ 'F#' ][ 5 ], frequencies[ 'E' ][ 5 ], frequencies[ 'D' ][ 5 ] ];
+    const midScale = [ frequencies[ 'F#' ][ 4 ], frequencies[ 'E' ][ 4 ], frequencies[ 'D' ][ 4 ], frequencies[ 'C' ][ 4 ], frequencies[ 'B' ][ 3 ], frequencies[ 'A' ][ 3 ], frequencies[ 'G' ][ 3 ], frequencies[ 'F#' ][ 3 ] ];
+    const lowScale = [ frequencies[ 'F#' ][ 3 ], frequencies[ 'E' ][ 3 ], frequencies[ 'D' ][ 3 ], frequencies[ 'C' ][ 3 ], frequencies[ 'B' ][ 2 ], frequencies[ 'A' ][ 2 ], frequencies[ 'G' ][ 2 ], frequencies[ 'F#' ][ 2 ] ];
 
-            osc2.connect( gain );
-            gain.connect( osc.frequency );
-            osc.connect( context.destination );
-            osc2.start();
-            osc.start();
-        }
-        else{
+    function playNote( type, freq ){
+        let gain = context.createGain();
+        gain.connect( context.destination );
+        let osc = context.createOscillator();
+        osc.type = type;
+        osc.frequency.value = freq;
+        osc.connect( gain );
+        osc.start();
+
+        gain.gain.exponentialRampToValueAtTime( 1e-5, context.currentTime + 1.5 );
+
+        setTimeout( () => {
+            osc.stop();
             osc.disconnect();
-            osc2.disconnect();
             gain.disconnect();
+        }, 1500 );
+    }
+
+    let play = false, frameCount = 0;
+    const music = t => {
+        if( play ) requestAnimationFrame( music );
+        frameCount ++;
+        if( frameCount % 20 == 0 ){
+            let playedNote = false;
+
+            // play highScale ?
+            if( Math.random() < .5 ){
+                playNote( 'sawtooth', highScale[ Math.random() * highScale.length | 0 ] );
+                playedNote = true;
+            }
+
+            // play midScale ?
+            if( Math.random() < .5 ){
+                playNote( 'square', midScale[ Math.random() * midScale.length | 0 ] );
+                playedNote = true;
+            }
+
+            // play lowScale ?
+            if( Math.random() < .5 ){
+                playNote( 'triangle', lowScale[ Math.random() * lowScale.length | 0 ] );
+                playedNote = true;
+            }
+
+            // play at least one note
+            if( ! playedNote ){
+                let n = Math.random();
+                if( n < 1/3 ) playNote( 'sawtooth', highScale[ Math.random() * highScale.length | 0 ] );
+                else if( n < 2/3 ) playNote( 'square', midScale[ Math.random() * midScale.length | 0 ] );
+                else playNote( 'triangle', lowScale[ Math.random() * lowScale.length | 0 ] );
+            }
         }
+    }
+
+    document.querySelector( '#div8' ).addEventListener( 'click', e => {
+        play = ! play;
+        if( play ) music();
     } );
 }
 </script>
 
+<p>
+    Let's add some kicks and snares!
+</p>
+<div id="div9">
+    <h2>#div9</h2>
+    <button id="kick">kick</button>
+    <button id="snare">snare</button>
+</div>
+<script>
+const kick = () => {
+    const osc = context.createOscillator();
+    const gain = context.createGain();
+    osc.connect( gain );
+    gain.connect( context.destination );
+    osc.frequency.setValueAtTime( 120,context.currentTime );
+    gain.gain.setValueAtTime( 2, context.currentTime );
+    osc.frequency.exponentialRampToValueAtTime( .01, context.currentTime + .5 );
+    gain.gain.exponentialRampToValueAtTime( .01, context.currentTime + .5 );
+    osc.start( context.currentTime );
+    osc.stop( context.currentTime + .5 );
+};
+
+const snare = () => {
+    const noise = context.createBufferSource();
+    noise.buffer = ( () => {
+        const e = context.sampleRate;
+        const t = context.createBuffer( 1, e, context.sampleRate );
+        const n = t.getChannelData( 0 );
+        for( let i = 0; i < e; i ++ ) n[ i ] = 2 * Math.random() - 1;
+        return t;
+    } )();
+
+    const filter = context.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 1e3;
+    noise.connect( filter );
+
+    const noiseEnvelope = context.createGain();
+    filter.connect( noiseEnvelope );
+    noiseEnvelope.connect( context.destination );
+
+    const osc = context.createOscillator();
+    osc.type = 'triangle';
+    const oscEnvelope = context.createGain();
+    osc.connect( oscEnvelope );
+    oscEnvelope.connect( context.destination );
+
+    noiseEnvelope.gain.setValueAtTime( 1, context.currentTime );
+    noiseEnvelope.gain.exponentialRampToValueAtTime( .01, context.currentTime + .2 );
+    noise.start( context.currentTime );
+
+    osc.frequency.setValueAtTime( 100, context.currentTime );
+    oscEnvelope.gain.setValueAtTime( .7, context.currentTime );
+    oscEnvelope.gain.exponentialRampToValueAtTime( .01, context.currentTime + .1 );
+    osc.start( context.currentTime );
+
+    osc.stop( context.currentTime + .2 );
+    noise.stop( context.currentTime + .2 );
+};
+
+document.querySelector( '#div9>#kick').addEventListener( 'click', kick );
+document.querySelector( '#div9>#snare').addEventListener( 'click', snare  );
+</script>
+
+<p>
+    Let's write some music:
+</p>
+<div id="div10">
+    <h2>#div10</h2>
+    <p>Write your song and click #div10 to start/stop music.</p>
+    <input style="width:100%" type="text" value="C#2,K,K,K,S,A1,Bb1,,F4,G#3,B2,,F4,F#4,F4,,,,"><br>
+    <button>Play/Stop</button>
+</div>
+<script>
+{
+    let osc,
+        songInput = document.querySelector( '#div10>input' )
+        position = 0,
+        play = false;
+
+    document.querySelector( '#div10>button' ).addEventListener( 'click', e => {
+        play = !play
+        if( play ){
+            osc = context.createOscillator()
+            osc.connect( context.destination );
+            osc.frequency.value = 1;
+            osc.start();
+        }
+        else{
+            osc.frequency.value = 1;
+            osc.disconnect();
+        }
+    } );
+
+    function playSong() {
+        if( play ){
+            let song = songInput.value.split( ',' );
+            let note = song[ position ].substring( 0, song[ position ].length - 1 ),
+                octave = song[ position ][ song[ position ].length - 1 ];
+            if( frequencies[ note ] && frequencies[ note ][ octave ] ) {
+                osc.frequency.value = frequencies[ note ][ octave ];
+            }
+            else{
+                osc.frequency.value = 1;
+            }
+
+            if( song[ position ] == 'K' ) kick();
+            else if( song[ position ] == 'S' ) snare();
+
+            position ++;
+            if( position >= song.length ) {
+                position = 0 ;
+            }
+        }
+    }
+    setInterval( playSong, 1000 / 4 );
+}
+</script>
+
+<p>
+    Or instead of interpolating ferquency of our <span class="code">Oscillator</span> node, we can create different ones for each note with basic <span class="code">ADSR</span>:
+</p>
+<div id="div11">
+    <h2>#div11</h2>
+    <p>Write your song and click #div10 to start/stop music.<br>Use <span class="code" style="color:white;">NoteOctave</span> notation for each note, and separate them by commas [ , ] without spaces. You can as well use K for a Kick and S for a Snare.</p>
+    <input style="width:100%" type="text" value="C#2,K,K,K,S,A1,Bb1,,F4,G#3,B2,,F4,F#4,F4,,,,"><br>
+    <button>Play/Stop</button>
+</div>
+<script>
+{
+    let songInput = document.querySelector( '#div11>input' )
+        position = 0,
+        play11 = false;
+
+    document.querySelector( '#div11>button' ).addEventListener( 'click', e => {
+        play11 = !play11
+    } );
+
+    function playSong() {
+        if( play11 ){
+            let song = songInput.value.split( ',' );
+            let note = song[ position ].substring( 0, song[ position ].length - 1 ),
+                octave = song[ position ][ song[ position ].length - 1 ];
+            if( frequencies[ note ] && frequencies[ note ][ octave ] ) {
+                let attack = 10,
+                    decay = 250,
+                    gain = context.createGain(),
+                    osc = context.createOscillator();
+                osc.frequency.value = frequencies[ note ][ octave ];
+                osc.connect( gain );
+                gain.connect( context.destination );
+                gain.gain.setValueAtTime( 0, context.currentTime );
+                gain.gain.linearRampToValueAtTime( 1, context.currentTime + attack / 1000 );
+                gain.gain.linearRampToValueAtTime( 0, context.currentTime + decay / 1000 );
+
+                osc.start();
+
+                setTimeout( () => {
+                    osc.stop();
+                    osc.disconnect();
+                    gain.disconnect();
+                }, 1000 / 4 );
+            }
+
+            if( song[ position ] == 'K' ) kick();
+            else if( song[ position ] == 'S' ) snare();
+
+            position ++;
+            if( position >= song.length ) {
+                position = 0 ;
+            }
+        }
+    }
+    setInterval( playSong, 1000 / 4 );
+}
+</script>
 
 <hr>
 <p>Ressources:</p>
@@ -343,6 +664,9 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
     <li><a href="http://alemangui.github.io/blog//2015/12/26/ramp-to-value.html">Web Audio, the ugly click and the human ear</a></li>
     <li><a href="http://marcgg.com/blog/2016/11/21/chiptune-sequencer-multiplayer/">Building A Multiplayer 8 Bits Sequencer</a></li>
     <li><a href="https://warm-escarpment-32217.herokuapp.com/">Collaborative 8 Bits Sequencer</a></li>
+    <li><a href="http://www.bit-101.com/blog/?p=3875">Audio Synthesis in JavaScript</a></li>
+    <li><a href="http://www.bit-101.com/blog/?p=3893">JavaScript Audio Synthesis Part 2: Interactive Sound</a></li>
+    <li><a href="http://www.bit-101.com/blog/?p=3896">JavaScript Audio Synthesis Part 3: Making Music</a></li>
 </ul>
 
 </body>
