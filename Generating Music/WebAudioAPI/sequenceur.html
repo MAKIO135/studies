@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Séquenceur</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    body{
+        background: #333;
+    }
+    .scale{
+        display:inline-block;
+    }
+    #highScale{
+        background: #555;
+    }
+    #midScale{
+        background: #777;
+    }
+    #lowScale{
+        background: #999;
+    }
+    #snare{
+        background: #bbb;
+    }
+    #kick{
+        background: #ddd;
+    }
+    .box{
+        display: inline-block;
+        border-radius: 4px;
+        transition: .1s all;
+    }
+    #highScale .box:hover, #midScale .box:hover, #lowScale .box:hover, #snare .box:hover, #kick .box:hover{
+        background: rgba( 255, 255, 255, 0.5 );
+    }
+    .active{
+        background: rgba( 255, 255, 255, 0.8 ) !important;
+    }
+    .playing{
+        background: rgba( 255, 100, 100, 0.8 ) !important;
+        box-shadow: 6px 6px 8px #444;
+    }
+</style>
+<body>
+
+<script>
+    const audioCtx = new AudioContext();
+
+    const frequencies = {};
+    frequencies[ 'C' ] = [ 16.35, 32.70, 65.41, 130.8, 261.6, 523.3, 1047, 2093, 4186 ];
+    frequencies[ 'C#' ] = [ 17.32, 34.65, 69.30, 138.6, 277.2, 554.4, 1109, 2217, 4435 ];
+    frequencies[ 'D' ] = [ 18.35, 36.71, 73.42, 146.8, 293.7, 587.3, 1175, 2349, 4699 ];
+    frequencies[ 'Eb' ] = [ 19.45, 38.89, 77.78, 155.6, 311.1, 622.3, 1245, 2489, 4978 ];
+    frequencies[ 'E' ] = [ 20.60, 41.20, 82.41, 164.8, 329.6, 659.3, 1319, 2637, 5274 ];
+    frequencies[ 'F' ] = [ 21.83, 43.65, 87.31, 174.6, 349.2, 698.5, 1397, 2794, 5588 ];
+    frequencies[ 'F#' ] = [ 23.12, 46.25, 92.50, 185.0, 370.0, 740.0, 1480, 2960, 5920 ];
+    frequencies[ 'G' ] = [ 24.50, 49.00, 98.00, 196.0, 392.0, 784.0, 1568, 3136, 6272 ];
+    frequencies[ 'G#' ] = [ 25.96, 51.91, 103.8, 207.7, 415.3, 830.6, 1661, 3322, 6645 ];
+    frequencies[ 'A' ] = [ 27.50, 55.00, 110.0, 220.0, 440.0, 880.0, 1760, 3520, 7040 ];
+    frequencies[ 'Bb' ] = [ 29.14, 58.27, 116.5, 233.1, 466.2, 932.3, 1865, 3729, 7459 ];
+    frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 7902 ];
+
+    const kick = () => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect( gain );
+        gain.connect( audioCtx.destination );
+        osc.frequency.setValueAtTime( 120, audioCtx.currentTime );
+        gain.gain.setValueAtTime( 2, audioCtx.currentTime );
+        osc.frequency.exponentialRampToValueAtTime( .01, audioCtx.currentTime + .5 );
+        gain.gain.exponentialRampToValueAtTime( .01, audioCtx.currentTime + .5 );
+        osc.start( audioCtx.currentTime );
+
+        setTimeout( () => {
+            osc.stop();
+            osc.disconnect();
+            gain.disconnect();
+        }, 500 );
+    };
+
+    const snare = () => {
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = ( () => {
+            const e = audioCtx.sampleRate;
+            const t = audioCtx.createBuffer( 1, e, audioCtx.sampleRate );
+            const n = t.getChannelData( 0 );
+            for( let i = 0; i < e; i ++ ) n[ i ] = 2 * Math.random() - 1;
+            return t;
+        } )();
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 1e3;
+        noise.connect( filter );
+
+        const noiseEnvelope = audioCtx.createGain();
+        filter.connect( noiseEnvelope );
+        noiseEnvelope.connect( audioCtx.destination );
+
+        const osc = audioCtx.createOscillator();
+        osc.type = 'triangle';
+        const oscEnvelope = audioCtx.createGain();
+        osc.connect( oscEnvelope );
+        oscEnvelope.connect( audioCtx.destination );
+
+        noiseEnvelope.gain.setValueAtTime( 1, audioCtx.currentTime );
+        noiseEnvelope.gain.exponentialRampToValueAtTime( .01, audioCtx.currentTime + .2 );
+        noise.start( audioCtx.currentTime );
+
+        osc.frequency.setValueAtTime( 100, audioCtx.currentTime );
+        oscEnvelope.gain.setValueAtTime( .7, audioCtx.currentTime );
+        oscEnvelope.gain.exponentialRampToValueAtTime( .01, audioCtx.currentTime + .1 );
+        osc.start( audioCtx.currentTime );
+
+        setTimeout( () => {
+            osc.stop();
+            osc.disconnect();
+            noise.stop();
+            noise.disconnect();
+            filter.disconnect();
+            oscEnvelope.disconnect();
+            noiseEnvelope.disconnect();
+        }, 200 );
+    };
+
+    const scales = [
+        {
+            name: 'highScale',
+            type: 'sawtooth',
+            notes: [
+                {
+                    note: 'D',
+                    octave: 6
+                },
+                {
+                    note: 'C',
+                    octave: 6
+                },
+                {
+                    note: 'B',
+                    octave: 5
+                },
+                {
+                    note: 'A',
+                    octave: 5
+                },
+                {
+                    note: 'G',
+                    octave: 5
+                },
+                {
+                    note: 'F#',
+                    octave: 5
+                },
+                {
+                    note: 'E',
+                    octave: 5
+                },
+                {
+                    note: 'D',
+                    octave: 5
+                }
+            ]
+        },
+        {
+            name: 'midScale',
+            type: 'square',
+            notes: [
+                {
+                    note: 'F#',
+                    octave: 4
+                },
+                {
+                    note: 'E',
+                    octave: 4
+                },
+                {
+                    note: 'D',
+                    octave: 4
+                },
+                {
+                    note: 'C',
+                    octave: 4
+                },
+                {
+                    note: 'B',
+                    octave: 3
+                },
+                {
+                    note: 'A',
+                    octave: 3
+                },
+                {
+                    note: 'G',
+                    octave: 3
+                },
+                {
+                    note: 'F#',
+                    octave: 3
+                }
+            ]
+        },
+        {
+            name: 'lowScale',
+            type: 'triangle',
+            notes: [
+                {
+                    note: 'F#',
+                    octave: 3
+                },
+                {
+                    note: 'E',
+                    octave: 3
+                },
+                {
+                    note: 'D',
+                    octave: 3
+                },
+                {
+                    note: 'C',
+                    octave: 3
+                },
+                {
+                    note: 'B',
+                    octave: 2
+                },
+                {
+                    note: 'A',
+                    octave: 2
+                },
+                {
+                    note: 'G',
+                    octave: 2
+                },
+                {
+                    note: 'F#',
+                    octave: 2
+                }
+            ]
+        },
+        {
+            name: 'snare',
+            type: 'snare',
+            notes: [
+                {
+                    name: 'snare'
+                }
+            ]
+        },
+        {
+            name: 'kick',
+            type: 'kick',
+            notes: [
+                {
+                    name: 'kick'
+                }
+            ]
+        }
+    ];
+
+    const playNote = ( type, freq ) => {
+        return function(){
+            let attack = 10,
+                decay = 250,
+                gain = audioCtx.createGain(),
+                osc = audioCtx.createOscillator();
+            osc.type = type;
+            osc.frequency.value = freq;
+            osc.connect( gain );
+            gain.connect( audioCtx.destination );
+            gain.gain.setValueAtTime( 0, audioCtx.currentTime );
+            gain.gain.linearRampToValueAtTime( 1, audioCtx.currentTime + attack / 1000 );
+            gain.gain.linearRampToValueAtTime( 0, audioCtx.currentTime + decay / 1000 );
+
+            osc.start();
+
+            setTimeout( () => {
+                osc.stop();
+                osc.disconnect();
+                gain.disconnect();
+            }, 1000 / 4 );
+        }
+    }
+
+    const NB_NOTES = scales.reduce( ( sum, d, i, arr ) => sum + d.notes.length, 0 );
+    const NB_TIMES = 8;
+
+    scales.forEach( d => {
+        let div = document.createElement( 'div' );
+        div.id = d.name;
+        div.classList += 'scale';
+        d.notes.forEach( n => {
+            let row = document.createElement( 'div' );
+            row.classList += 'row';
+            for( let i = 0; i < NB_TIMES; i ++ ){
+                let box = document.createElement( 'div' );
+                box.classList += 'box';
+                if( Math.random() < .08 ) box.classList.add( 'active' );
+                box.play = d.type == 'kick' ? kick :
+                    d.type == 'snare' ? snare :
+                    playNote( d.type,  frequencies[ n.note ][ n.octave ] );
+                box.addEventListener( 'click', e => {
+                    box.classList.toggle( 'active' );
+                    if( box.classList.contains( 'active' ) ) box.play();
+                } )
+                row.appendChild( box );
+            }
+            div.appendChild( row );
+        } );
+        document.body.appendChild( div );
+    } );
+
+    const setSize = e => {
+        let boxWidth = ~~ ( ( window.innerWidth - 10 ) / NB_TIMES );
+        let boxHeight = ~~ ( ( window.innerHeight - 10 ) / NB_NOTES );
+        document.querySelectorAll( '.box' ).forEach( box => {
+            box.style.height = `${boxHeight}px`;
+            box.style.width = `${boxWidth}px`;
+        } );
+        document.body.style.marginLeft = `${ ~~ ( ( window.innerWidth - ( boxWidth * NB_TIMES ) ) / 2 ) }px`;
+        document.body.style.marginTop = `${ ~~ ( ( window.innerHeight - ( boxHeight * NB_NOTES ) ) / 2 )}px`;
+    };
+    window.addEventListener( 'load', setSize );
+    window.addEventListener( 'resize', setSize );
+
+
+    let n = 0;
+    let play = true;
+    const playMusic = () => {
+        if( play ){
+            document.querySelectorAll( `.box.active:nth-child(${n+1})` ).forEach( d => {
+                d.classList.toggle( 'playing' );
+                d.play();
+                setTimeout( () => {
+                    d.classList.toggle( 'playing' );
+                }, 1000 / 4 );
+            } );
+            n = ++n % NB_TIMES;
+        }
+    };
+    setInterval( playMusic, 1000 / 4 );
+
+    window.addEventListener( 'keypress', e => {
+        if( e.key === ' ' ){
+            play = ! play;
+            n = 0;
+        }
+        else if( e.key === 'r' ){
+            document.querySelectorAll( '.box.active' ).forEach( d => {
+                d.classList.toggle( 'active' );
+            } );
+            document.querySelectorAll( '.box' ).forEach( d => {
+                d.classList.toggle( 'active', Math.random() < .08 );
+            } );
+        }
+    } );
+</script>
+</body>
+</html>
