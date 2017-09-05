@@ -39,8 +39,6 @@
 
         .code{
             padding: 0px 4px;
-            /*border-radius: 2px;*/
-            /*background: #d3d3d3;*/
             color: #333;
             font-family: monospace;
             font-weight: bold;
@@ -97,15 +95,15 @@
     First, to use the Web Audio API, we need an <span class="code">AudioContext</span>:
 </p>
 <script>
-const context = new AudioContext();
+const audioCtx = new AudioContext();
 </script>
 
 <p>
     Then we can create audio sources like an <span class="code">Oscillator</span> node, and connect it to the <span class="code">AudioContext</span> <span class="code">destination</span>:
 </p>
 <script>
-const osc = context.createOscillator();
-osc.connect( context.destination );
+const oscillator = audioCtx.createOscillator();
+oscillator.connect( audioCtx.destination );
 </script>
 
 <p>We can finally start and stop this source:</p>
@@ -120,8 +118,11 @@ osc.connect( context.destination );
     let play = false;
     document.querySelector('#div1').addEventListener( 'click', e => {
         play = !play;
-        if( play ) osc.start();
-        else osc.stop();
+        if( play ) oscillator.start();
+        else{
+            oscillator.stop();
+            oscillator.disconnect();
+        }
     } );
 }
 </script>
@@ -140,11 +141,14 @@ osc.connect( context.destination );
     document.querySelector( '#div2' ).addEventListener( 'click', e => {
         play = !play;
         if( play ){
-            osc = context.createOscillator();
-            osc.connect( context.destination );
+            osc = audioCtx.createOscillator();
+            osc.connect( audioCtx.destination );
             osc.start();
         }
-        else osc.stop();
+        else{
+            osc.stop();
+            osc.disconnect();
+        }
     } );
 }
 </script>
@@ -172,13 +176,16 @@ osc.connect( context.destination );
     document.querySelector( '#div3>button' ).addEventListener( 'click', e => {
         play = !play;
         if( play ){
-            osc = context.createOscillator();
+            osc = audioCtx.createOscillator();
             osc.type = select.value;
             osc.frequency.value = slider.value;
-            osc.connect( context.destination );
+            osc.connect( audioCtx.destination );
             osc.start();
         }
-        else osc.stop();
+        else{
+            osc.stop();
+            osc.disconnect();
+        }
     } );
 }
 </script>
@@ -194,8 +201,8 @@ osc.connect( context.destination );
 <script>
 {
     let osc;
-    const gain = context.createGain();
-    gain.connect( context.destination );
+    const gain = audioCtx.createGain();
+    gain.connect( audioCtx.destination );
 
     const slider = document.querySelector( '#div4>input' );
     slider.addEventListener( 'mousemove', e => {
@@ -206,11 +213,14 @@ osc.connect( context.destination );
     document.querySelector( '#div4>button' ).addEventListener( 'click', e => {
         play = !play;
         if( play ){
-            osc = context.createOscillator();
+            osc = audioCtx.createOscillator();
             osc.connect( gain );
             osc.start();
         }
-        else osc.stop();
+        else{
+            osc.stop();
+            osc.disconnect();
+        }
     } );
 }
 </script>
@@ -293,17 +303,17 @@ osc.connect( context.destination );
     document.querySelector( '#div5>button' ).addEventListener( 'click', e => {
         play = ! play;
         if( play ){
-            osc = context.createOscillator();
+            osc = audioCtx.createOscillator();
             osc.frequency.value = baseFreq;
-            osc2 = context.createOscillator();
+            osc2 = audioCtx.createOscillator();
             osc2.frequency.value = sirenFreq;
             osc2.type = sirentType;
-            gain = context.createGain();
+            gain = audioCtx.createGain();
             gain.gain.value = sirenAmp;
 
             osc2.connect( gain );
             gain.connect( osc.frequency );
-            osc.connect( context.destination );
+            osc.connect( audioCtx.destination );
             osc2.start();
             osc.start();
         }
@@ -325,14 +335,14 @@ osc.connect( context.destination );
 </div>
 <script>
 document.querySelector( '#div6' ).addEventListener( 'click', e => {
-    let gain = context.createGain(),
-        osc = context.createOscillator(),
+    let gain = audioCtx.createGain(),
+        osc = audioCtx.createOscillator(),
         noteDuration = 1.5; // in seconds
 
     osc.connect( gain );
-    gain.connect( context.destination );
+    gain.connect( audioCtx.destination );
     osc.start();
-    gain.gain.exponentialRampToValueAtTime( 1e-5, context.currentTime + noteDuration );
+    gain.gain.exponentialRampToValueAtTime( 1e-5, audioCtx.currentTime + noteDuration );
 
     setTimeout( () => {
         osc.stop();
@@ -381,15 +391,15 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
                 octave = Math.floor( Math.random() * 9 ),
                 noteDuration = .5 + Math.random() * 5;
 
-            let osc = context.createOscillator();
-            let gain = context.createGain();
-            gain.connect( context.destination );
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            gain.connect( audioCtx.destination );
             osc.connect( gain );
 
             osc.frequency.value = frequencies[ note ][ octave ];
             osc.type = types[ Math.floor( Math.random() * types.length ) ];
             osc.start();
-            gain.gain.exponentialRampToValueAtTime( 1e-5, context.currentTime + noteDuration );
+            gain.gain.exponentialRampToValueAtTime( 1e-5, audioCtx.currentTime + noteDuration );
 
             setTimeout( () => {
                 osc.stop();
@@ -419,16 +429,16 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
     const midScale = [ frequencies[ 'F#' ][ 4 ], frequencies[ 'E' ][ 4 ], frequencies[ 'D' ][ 4 ], frequencies[ 'C' ][ 4 ], frequencies[ 'B' ][ 3 ], frequencies[ 'A' ][ 3 ], frequencies[ 'G' ][ 3 ], frequencies[ 'F#' ][ 3 ] ];
     const lowScale = [ frequencies[ 'F#' ][ 3 ], frequencies[ 'E' ][ 3 ], frequencies[ 'D' ][ 3 ], frequencies[ 'C' ][ 3 ], frequencies[ 'B' ][ 2 ], frequencies[ 'A' ][ 2 ], frequencies[ 'G' ][ 2 ], frequencies[ 'F#' ][ 2 ] ];
 
-    function playNote( type, freq ){
-        let gain = context.createGain();
-        gain.connect( context.destination );
-        let osc = context.createOscillator();
+    const playNote = ( type, freq ) => {
+        let gain = audioCtx.createGain();
+        gain.connect( audioCtx.destination );
+        let osc = audioCtx.createOscillator();
         osc.type = type;
         osc.frequency.value = freq;
         osc.connect( gain );
         osc.start();
 
-        gain.gain.exponentialRampToValueAtTime( 1e-5, context.currentTime + 1.5 );
+        gain.gain.exponentialRampToValueAtTime( 1e-5, audioCtx.currentTime + 1.5 );
 
         setTimeout( () => {
             osc.stop();
@@ -489,54 +499,66 @@ frequencies[ 'B' ] = [ 30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976, 3951, 790
 </div>
 <script>
 const kick = () => {
-    const osc = context.createOscillator();
-    const gain = context.createGain();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
     osc.connect( gain );
-    gain.connect( context.destination );
-    osc.frequency.setValueAtTime( 120,context.currentTime );
-    gain.gain.setValueAtTime( 2, context.currentTime );
-    osc.frequency.exponentialRampToValueAtTime( .01, context.currentTime + .5 );
-    gain.gain.exponentialRampToValueAtTime( .01, context.currentTime + .5 );
-    osc.start( context.currentTime );
-    osc.stop( context.currentTime + .5 );
+    gain.connect( audioCtx.destination );
+    osc.frequency.setValueAtTime( 120,audioCtx.currentTime );
+    gain.gain.setValueAtTime( 2, audioCtx.currentTime );
+    osc.frequency.exponentialRampToValueAtTime( .01, audioCtx.currentTime + .5 );
+    gain.gain.exponentialRampToValueAtTime( .01, audioCtx.currentTime + .5 );
+    osc.start( audioCtx.currentTime );
+
+    setTimeout( () => {
+        osc.stop();
+        osc.disconnect();
+        gain.disconnect();
+    }, 500 );
 };
 
 const snare = () => {
-    const noise = context.createBufferSource();
+    const noise = audioCtx.createBufferSource();
     noise.buffer = ( () => {
-        const e = context.sampleRate;
-        const t = context.createBuffer( 1, e, context.sampleRate );
+        const e = audioCtx.sampleRate;
+        const t = audioCtx.createBuffer( 1, e, audioCtx.sampleRate );
         const n = t.getChannelData( 0 );
         for( let i = 0; i < e; i ++ ) n[ i ] = 2 * Math.random() - 1;
         return t;
     } )();
 
-    const filter = context.createBiquadFilter();
+    const filter = audioCtx.createBiquadFilter();
     filter.type = 'highpass';
     filter.frequency.value = 1e3;
     noise.connect( filter );
 
-    const noiseEnvelope = context.createGain();
+    const noiseEnvelope = audioCtx.createGain();
     filter.connect( noiseEnvelope );
-    noiseEnvelope.connect( context.destination );
+    noiseEnvelope.connect( audioCtx.destination );
 
-    const osc = context.createOscillator();
+    const osc = audioCtx.createOscillator();
     osc.type = 'triangle';
-    const oscEnvelope = context.createGain();
+    const oscEnvelope = audioCtx.createGain();
     osc.connect( oscEnvelope );
-    oscEnvelope.connect( context.destination );
+    oscEnvelope.connect( audioCtx.destination );
 
-    noiseEnvelope.gain.setValueAtTime( 1, context.currentTime );
-    noiseEnvelope.gain.exponentialRampToValueAtTime( .01, context.currentTime + .2 );
-    noise.start( context.currentTime );
+    noiseEnvelope.gain.setValueAtTime( 1, audioCtx.currentTime );
+    noiseEnvelope.gain.exponentialRampToValueAtTime( .01, audioCtx.currentTime + .2 );
+    noise.start( audioCtx.currentTime );
 
-    osc.frequency.setValueAtTime( 100, context.currentTime );
-    oscEnvelope.gain.setValueAtTime( .7, context.currentTime );
-    oscEnvelope.gain.exponentialRampToValueAtTime( .01, context.currentTime + .1 );
-    osc.start( context.currentTime );
+    osc.frequency.setValueAtTime( 100, audioCtx.currentTime );
+    oscEnvelope.gain.setValueAtTime( .7, audioCtx.currentTime );
+    oscEnvelope.gain.exponentialRampToValueAtTime( .01, audioCtx.currentTime + .1 );
+    osc.start( audioCtx.currentTime );
 
-    osc.stop( context.currentTime + .2 );
-    noise.stop( context.currentTime + .2 );
+    setTimeout( () => {
+        osc.stop();
+        osc.disconnect();
+        noise.stop();
+        noise.disconnect();
+        filter.disconnect();
+        oscEnvelope.disconnect();
+        noiseEnvelope.disconnect();
+    }, 200 );
 };
 
 document.querySelector( '#div9>#kick').addEventListener( 'click', kick );
@@ -557,15 +579,17 @@ document.querySelector( '#div9>#snare').addEventListener( 'click', snare  );
     let osc,
         songInput = document.querySelector( '#div10>input' )
         position = 0,
-        play = false;
+        play = false,
+        lastT = 0;
 
     document.querySelector( '#div10>button' ).addEventListener( 'click', e => {
         play = !play
         if( play ){
-            osc = context.createOscillator()
-            osc.connect( context.destination );
+            osc = audioCtx.createOscillator()
+            osc.connect( audioCtx.destination );
             osc.frequency.value = 1;
             osc.start();
+            playSong( 250 );
         }
         else{
             osc.frequency.value = 1;
@@ -573,28 +597,31 @@ document.querySelector( '#div9>#snare').addEventListener( 'click', snare  );
         }
     } );
 
-    function playSong() {
-        if( play ){
-            let song = songInput.value.split( ',' );
-            let note = song[ position ].substring( 0, song[ position ].length - 1 ),
+    const playSong = ( t ) => {
+        requestAnimationFrame( playSong );
+        if( t - lastT >= 250 ){
+            lastT = t;
+            if( play ){
+                let song = songInput.value.split( ',' );
+                let note = song[ position ].substring( 0, song[ position ].length - 1 ),
                 octave = song[ position ][ song[ position ].length - 1 ];
-            if( frequencies[ note ] && frequencies[ note ][ octave ] ) {
-                osc.frequency.value = frequencies[ note ][ octave ];
-            }
-            else{
-                osc.frequency.value = 1;
-            }
+                if( frequencies[ note ] && frequencies[ note ][ octave ] ) {
+                    osc.frequency.value = frequencies[ note ][ octave ];
+                }
+                else{
+                    osc.frequency.value = 1;
+                }
 
-            if( song[ position ] == 'K' ) kick();
-            else if( song[ position ] == 'S' ) snare();
+                if( song[ position ] == 'K' ) kick();
+                else if( song[ position ] == 'S' ) snare();
 
-            position ++;
-            if( position >= song.length ) {
-                position = 0 ;
+                position ++;
+                if( position >= song.length ) {
+                    position = 0 ;
+                }
             }
         }
     }
-    setInterval( playSong, 1000 / 4 );
 }
 </script>
 
@@ -611,28 +638,28 @@ document.querySelector( '#div9>#snare').addEventListener( 'click', snare  );
 {
     let songInput = document.querySelector( '#div11>input' )
         position = 0,
-        play11 = false;
+        play = false;
 
     document.querySelector( '#div11>button' ).addEventListener( 'click', e => {
-        play11 = !play11
+        play = !play
     } );
 
-    function playSong() {
-        if( play11 ){
+    const playSong = () => {
+        if( play ){
             let song = songInput.value.split( ',' );
             let note = song[ position ].substring( 0, song[ position ].length - 1 ),
                 octave = song[ position ][ song[ position ].length - 1 ];
             if( frequencies[ note ] && frequencies[ note ][ octave ] ) {
                 let attack = 10,
                     decay = 250,
-                    gain = context.createGain(),
-                    osc = context.createOscillator();
+                    gain = audioCtx.createGain(),
+                    osc = audioCtx.createOscillator();
                 osc.frequency.value = frequencies[ note ][ octave ];
                 osc.connect( gain );
-                gain.connect( context.destination );
-                gain.gain.setValueAtTime( 0, context.currentTime );
-                gain.gain.linearRampToValueAtTime( 1, context.currentTime + attack / 1000 );
-                gain.gain.linearRampToValueAtTime( 0, context.currentTime + decay / 1000 );
+                gain.connect( audioCtx.destination );
+                gain.gain.setValueAtTime( 0, audioCtx.currentTime );
+                gain.gain.linearRampToValueAtTime( 1, audioCtx.currentTime + attack / 1000 );
+                gain.gain.linearRampToValueAtTime( 0, audioCtx.currentTime + decay / 1000 );
 
                 osc.start();
 
@@ -667,6 +694,16 @@ document.querySelector( '#div9>#snare').addEventListener( 'click', snare  );
     <li><a href="http://www.bit-101.com/blog/?p=3875">Audio Synthesis in JavaScript</a></li>
     <li><a href="http://www.bit-101.com/blog/?p=3893">JavaScript Audio Synthesis Part 2: Interactive Sound</a></li>
     <li><a href="http://www.bit-101.com/blog/?p=3896">JavaScript Audio Synthesis Part 3: Making Music</a></li>
+    <li><a href="http://teropa.info/blog/2016/08/19/what-is-the-web-audio-api.html">Learn Web Audio from the Ground Up, Part 0:
+What Is the Web Audio API?</a></li>
+    <li><a href="http://teropa.info/blog/2016/08/04/sine-waves.html">Learn Web Audio from the Ground Up, Part 1:
+Signals and Sine Waves</a></li>
+<li><a href="http://teropa.info/blog/2016/08/10/frequency-and-pitch.html">Learn Web Audio from the Ground Up, Part 2:
+Controlling Frequency and Pitch</a></li>
+<li><a href="http://teropa.info/blog/2016/08/30/amplitude-and-loudness.html">Learn Web Audio from the Ground Up, Part 3:
+Controlling Amplitude and Loudness</a></li>
+<li><a href="http://teropa.info/blog/2016/09/20/additive-synthesis.html">Learn Web Audio from the Ground Up, Part 4:
+Additive Synthesis And the Harmonic Series</a></li>
 </ul>
 
 </body>
