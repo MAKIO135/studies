@@ -43,7 +43,6 @@
     }
     .playing{
         background: rgba( 255, 100, 100, 0.8 ) !important;
-        box-shadow: 6px 6px 8px #444;
     }
 </style>
 <body>
@@ -285,7 +284,7 @@
                 gain.disconnect();
             }, 1000 / 4 );
         }
-    }
+    };
 
     const NB_NOTES = scales.reduce( ( sum, d, i, arr ) => sum + d.notes.length, 0 );
     const NB_TIMES = 8;
@@ -297,6 +296,7 @@
         d.notes.forEach( n => {
             let row = document.createElement( 'div' );
             row.classList += 'row';
+
             for( let i = 0; i < NB_TIMES; i ++ ){
                 let box = document.createElement( 'div' );
                 box.classList += 'box';
@@ -327,7 +327,6 @@
     };
     window.addEventListener( 'load', setSize );
     window.addEventListener( 'resize', setSize );
-
 
     let n = 0;
     let play = true;
