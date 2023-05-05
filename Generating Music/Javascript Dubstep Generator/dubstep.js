@@ -125,14 +125,20 @@ function randInt(from, to) {
 	}
 
 	window.addEventListener( 'load', e => {
-		setTimeout(function(){
-			var bufSize = 1024;
-			// firefox can't take such a short buffer run
-			if(navigator.userAgent.indexOf("Firefox")!=-1) {
-				bufSize = 4096;
+		let started = false;
+		window.addEventListener( 'click', _ => {
+			if(!started) {
+				started = true;
+				setTimeout(function(){
+					var bufSize = 1024;
+					// firefox can't take such a short buffer run
+					if(navigator.userAgent.indexOf("Firefox")!=-1) {
+						bufSize = 4096;
+					}
+					dev = audioLib.AudioDevice(fillBuffer, 2, bufSize);
+					sampleRate = dev.sampleRate;
+				}, 1000);
 			}
-			dev = audioLib.AudioDevice(fillBuffer, 2, bufSize);
-			sampleRate = dev.sampleRate;
-		}, 1000);
+		});
 	});
 }());
